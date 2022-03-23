@@ -45,8 +45,6 @@
 			// script.println("location.href='login.jsp'");
 			script.println("</script>");
 		}
-	
-	
 	%>
 </body>
 </html>

@@ -23,15 +23,15 @@ public class UserDAO {
 		}
 	}
 
-	public int login(String userID, String userPassword) {
-		String SQL = "SELECT userPassword FROM USER WHERE userID = ?";
+	public int login(String uID, String uPass) {
+		String SQL = "SELECT uPass FROM USER WHERE uID = ?";
 		try {
 			pstmt = conn.prepareStatement(SQL);
-			pstmt.setString(1,  userID);
+			pstmt.setString(1,  uID);
 			rs = pstmt.executeQuery();
 
 			if (rs.next()) {
-				if (rs.getString(1).equals(userPassword)) {
+				if (rs.getString(1).equals(uPass)) {
 					return 100;
 				} else {
 					return -100;
@@ -44,4 +44,32 @@ public class UserDAO {
 		return -300; 
 	}
 	
+	
+	public int join(User user) {
+		String SQL = "insert into user values(?,?,?,?,?)";
+		try {
+			pstmt = conn.prepareStatement(SQL);
+			Connection.prepareStatement(SQL).setString(1,user.getUserID());
+			pstmt.setString(2,user.getUserPassword());
+			pstmt.setString(3,user.getUserName());
+			pstmt.setString(4,user.getUserEmail());
+			pstmt.setString(5,user.getUserPhone());
+			return pstmt.executeUpdate();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -300;
+	}
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
