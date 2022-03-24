@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -71,30 +73,33 @@
             margin-bottom:24px;
             border-top:2px solid #333;
             border-bottom:2px solid #333;
+        }  
+        .n-tit,.n-content{
+            padding:20px 0;
         }
-        .theader{
+        .n-tit{
             border-bottom:1px solid #333;
         }
-        .theader,.tbody{
+        #noticeTit,#noticeContent{
+            width:100%;
+            padding:16px;
+            font-size:20px;
+        } 
+        #noticeTit{
+            font-weight:700;
+            border:none;
+        }  
+        #noticeContent{
+            height:300px;
+            border:none;
+        }    
+        .g-btn{
             display:flex;
             flex-flow:row nowrap;
-            padding:16px 0;            
-        }
-        .theader>div,.tbody>div{            
-            text-align:center;
-        }
-        .col-2{
-            flex:2;
-        }
-        .col-6{
-            flex:6;
-        }
-       
-        .notice-tit{
-            text-align:left !important;
-        }
-        button{
-            float:right;
+            justify-content:flex-end;
+        }      
+        button{         
+            margin-left:16px;   
             border-radius:8px;
             padding:8px;
             background-color:darkgreen;
@@ -102,7 +107,9 @@
             font-size:20px;
             color:#fff;
         }
-
+        button:first-child{
+            background-color:darkred;
+        }
         
         .footer{
             background-color:#999;            
@@ -143,22 +150,27 @@
         <section class="sec main-sec">
             <div class="container">
                 <div class="contents clearfix">                    
-                    <div class="sec-tit">게시판</div>
+                    <div class="sec-tit">글읽기</div>
                     <div class="table">
-                        <div class="theader">
-                            <div class="col-tit col-2">번호</div>
-                            <div class="col-tit col-6">제목</div>
-                            <div class="col-tit col-2">작성일</div>
-                            <div class="col-tit col-2">작성자</div>
+                        <div class="n-tit">
+                            제목
+                            <br>
+                            <input type="text" name="noticeTit" id="noticeTit" value="문의 드립니다." disabled>    
                         </div>
-                        <div class="tbody">
-                            <div class="notice-num col-2">1</div>
-                            <div class="notice-tit col-6"><a href="./read.jsp">문의 드립니다.</a></div>
-                            <div class="notice-date col-2">2022-03-23</div>
-                            <div class="notice-name col-2">111111</div>
+                        <div class="n-content">
+                            내용
+                            <br>
+                            <textarea name="noticeContent" id="noticeContent"  disabled>
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae aperiam ipsa ullam tenetur veritatis, explicabo repellendus officia minus magni perspiciatis nam quis, iure aliquid sequi dolor vel molestias, pariatur temporibus.
+                                Vitae maiores ullam quam magni incidunt necessitatibus facere eos. Quod, iusto rem earum dignissimos quae a exercitationem. In obcaecati nisi fugit ab, voluptates, necessitatibus, inventore architecto quidem eaque illo beatae!
+                            </textarea>
                         </div>
+                        
                     </div>
-                    <button type="button"><a href="./write.jsp">글쓰기</a></button>
+                    <div class="g-btn">
+                        <button type="button"><a href="./update.jsp">수정</a></button>
+                        <button type="button">삭제</button>
+                    </div>
                 </div>
             </div>
         </section>
