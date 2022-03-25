@@ -1,5 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="notice.Notice" %>
+<%@ page import="notice.NoticeDAO" %>
+<%@ page import="java.util.ArrayList" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -7,118 +12,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>웹게시판</title>
+    <link rel="stylesheet" href="./css/notice.css">
     <style>
-        *{box-sizing:border-box;margin:0;padding:0;}
-        ul,ol,li{list-style:none;}
-        a{color:inherit;text-decoration:none;} 
-        img{width:100%;vertical-align:top;}
-        .clearfix::after{content:'';display:block;clear:both;}
-
-
-        .header{
-            background-color:#a0a0a0;
-        }
-        .header .container{
-            width:100%;
-            max-width:1200px;
-            margin:0 auto;
-            padding:16px;
-        }
-        .gbl-nav,.gbl-nav ul{
-            display:flex;
-            flex-flow:row nowrap;
-            justify-content:space-between;
-            align-items:flex-end;
-        }
-        .nav-left li{
-            margin-right:32px;            
-        }
         
-        .nav-right li{
-            margin-left:32px;            
-        }
-        .nav-left li.logo{
-            font-size:32px;
-            font-weight:700;
-            color:#fff;
-        }
-        .gbl-nav ul li{
-            font-size:24px;
-            font-weight:500;
-            color:#333;
-        }
-        .gbl-nav ul li:hover a{
-            color:#fff;
-        }
-        .active{
-            background-color:lightgreen !important;
-            color:#fff !important;
-        }
-
-
-        
-        .main-sec .container{
-            max-width:1200px;
-            margin:0 auto; 
-            padding:36px 16px;           
-        }
-        .sec-tit{
-            margin-bottom:32px;
-            font-weight:700;
-            font-size:32px;
-            color:#333;
-            text-align:center;
-        }
-        .table{
-            margin-bottom:24px;
-            border-top:2px solid #333;
-            border-bottom:2px solid #333;
-        }
-        .theader{
-            border-bottom:1px solid #333;
-        }
-        .theader,.tbody{
-            display:flex;
-            flex-flow:row nowrap;
-            padding:16px 0;            
-        }
-        .theader>div,.tbody>div{            
-            text-align:center;
-        }
-        .col-2{
-            flex:2;
-        }
-        .col-6{
-            flex:6;
-        }
-       
-        .notice-tit{
-            text-align:left !important;
-        }
-        button{
-            float:right;
-            border-radius:8px;
-            padding:8px;
-            background-color:darkgreen;
-            font-weight:500;
-            font-size:20px;
-            color:#fff;
-        }
-
-        
-        .footer{
-            background-color:#999;            
-        }
-        address{
-            padding:20px;
-            font-weight:700;
-            font-size:24px;
-            color:#fff;
-            text-align:center;
-        }
     </style>
 </head>
 <body>
+   	<%
+		String userID = null;
+		if(session.getAttribute("userID") != null){
+			//로그인 중
+			userID = (String)session.getAttribute("userID");
+		}else{
+			//로그오프
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert('잘못된 접근입니다. 매인페이지로 돌아갑니다.');");
+			script.println("location.href='./main.jsp';");				
+			script.println("</script>");
+		}
+		
+		
+	%>
     <div class="wrap">
         <header class="header">
             <div class="container">
@@ -127,15 +42,38 @@
                         <li class="nav-left">
                             <ul>
                                 <li class="logo"><a href="./main.jsp">게시판 만들기</a></li>
-                                <li><a href="./main.jsp">메인</a></li>
-                                <li><a href="./notice.jsp" class="active">게시판</a></li>
+                                <li><a href="./main.jsp" class="active">메인</a></li>
+                                <%
+                                if(userID != null){
+                                %>
+                                	<li><a href="./notice.jsp">게시판</a></li>
+                                <%
+                                }
+                                %>
                             </ul>
                         </li>
                         <li class="nav-right">
                             <ul>
-                                <li><a href="./login.jsp">로그인</a></li>
-                                <li><a href="#" style="display:none;">로그아웃</a></li>
-                                <li><a href="./join.jsp">회원가입</a></li>
+                            	<%
+                            	if(userID == null){                            		
+                           		%>
+                           			<!-- 로그인 아님 -->
+	                            	<li><a href="./login.jsp">로그인</a></li>
+	                            	<li><a href="./join.jsp">회원가입</a></li>
+                            	<%	
+                            	}else{
+                           		%>
+                            		<!-- 로그인 중임 -->
+                            		<li><a href="./logoutAction.jsp">로그아웃</a></li>
+                           		<%
+                            	}
+                            	%>
+                            
+                                
+                                
+                                
+                                
+                                
                             </ul>
                         </li>
                     </ul>
@@ -153,13 +91,50 @@
                             <div class="col-tit col-2">작성일</div>
                             <div class="col-tit col-2">작성자</div>
                         </div>
-                        <div class="tbody">
-                            <div class="notice-num col-2">1</div>
-                            <div class="notice-tit col-6"><a href="./read.jsp">문의 드립니다.</a></div>
-                            <div class="notice-date col-2">2022-03-23</div>
-                            <div class="notice-name col-2">111111</div>
-                        </div>
+                       
+                          <%
+                          NoticeDAO notice = new NoticeDAO();
+                          ArrayList<Notice> list = notice.noticeList();
+                          for(int idx=0;idx<list.size();idx++) {
+                          %>
+                            <div class="tbody">
+	                            <div class="notice-num col-2">
+	                            	<% list.get(idx).getNoticeID(); %>
+	                            </div>
+	                            <div class="notice-tit col-6"><a href="
+	                            ./read.jsp?noticeID=<%=list.get(idx).getNoticeID()
+	                            %>">
+	                            	<% list.get(idx).getNoticeTit(); %>
+	                            </a></div>
+	                            <div class="notice-date col-2">
+	                            	<% list.get(idx).getNoticeDate(); %>
+	                            </div>
+	                            <div class="notice-name col-2">
+	                            	<% list.get(idx).getNoticeName(); %>
+	                            </div>
+	                        </div>
+                          <%
+                          }%>
+                        
                     </div>
+                    
+                    <% 
+                    	if(pageNumber == 1){
+                    %>
+                    <button type="button">이전</button>                    
+                    <%		
+                    	}else{
+                    %>
+                    <button type="button"><a href="notice.jsp?pageNumber=<%=pageNumber-1%>">이전</a></button>
+                    
+                    
+                    <% if(notice.nextPage(pageNumber+1)){%>
+                    	<button type="button"><a href="notice.jsp?pageNumber=2<%=pageNumber+1%>">다음</a></button>
+                    <%
+                    }else{
+                    %>
+                    <button type="button">다음</button>
+                    <% } %>
                     <button type="button"><a href="./write.jsp">글쓰기</a></button>
                 </div>
             </div>

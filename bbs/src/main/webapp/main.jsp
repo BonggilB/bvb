@@ -31,7 +31,13 @@
                             <ul>
                                 <li class="logo"><a href="./main.jsp">게시판 만들기</a></li>
                                 <li><a href="./main.jsp" class="active">메인</a></li>
-                                <li><a href="./notice.jsp">게시판</a></li>
+                                <%
+                                if(userID != null){
+                                %>
+                                	<li><a href="./notice.jsp">게시판</a></li>
+                                <%
+                                }
+                                %>
                             </ul>
                         </li>
                         <li class="nav-right">
@@ -66,7 +72,18 @@
             <div class="container">
                 <div class="contents">                    
                     <div class="contents-tit">환영합니다.</div>
-                    <div class="contents-txt">로그인후 게시판 작성이 가능합니다.</div>
+                    <%
+                         if(userID == null){                            		
+                    %>
+                    			<div class="contents-txt">로그인후 게시판 작성이 가능합니다.</div>
+                    <%
+                         }else{
+                    %>                    
+                    			<div class="contents-txt">이제 게시판 사용이 가능합니다.</div>
+                    <%
+                         }
+                    %>
+                    
                     <div class="contents-txt" style="display:none;">자유롭게 게시판 기능을 사용할 수 있습니다.</div>
                 </div>
             </div>
